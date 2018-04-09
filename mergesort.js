@@ -47,13 +47,6 @@ function height(group) {
     return rectHeight * group / 2
 }
 
-window.onload = function() {    
-    console.log(rectWidth)
-    makeCanvas()
-    displayCanvas()
-    window.setTimeout(split, time_unit * size / 2)
-}
-
 function makeCanvas() {
     let canvas = d3.select("body")
         .append("svg") 
@@ -121,4 +114,10 @@ function merge() {
         i = 0
         j = size
     }
+}
+
+window.onload = function() {
+    makeCanvas()
+    displayCanvas()
+    window.setTimeout(split, time_unit * size / 2)
 }
