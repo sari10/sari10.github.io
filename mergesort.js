@@ -91,8 +91,6 @@ function split() {
 }
 
 function arrange() {
-    console.log('width', window.width)
-    console.log('inner width', window.innerWidth)
     sorted = sorted.slice(0, i)
         .concat(sorted.slice(i, j).sort((a, b) => a - b))
         .concat(sorted.slice(j, n))
