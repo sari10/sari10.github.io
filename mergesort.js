@@ -12,32 +12,10 @@ let y = Array(n).fill(1)
 let size = 2
 let i = 0
 let j = 2
-let stage = 'select'
 
 let colorScale = d3.scaleLinear()
     .domain([-4, n])
     .range(['white', 'green'])
-
-function current_locs() {
-    let locs = Array(n)
-    for (let i = 0; i < n; i++)
-        locs[sorted[i]] = i
-    return locs
-}
-
-function current_groups() {
-    let mid = (i + j) / 2
-    let groups = []
-    for (let d = 0; d < n; d++) {
-        if (x[d] < i || x[d] >= j)
-            groups.push(1)
-        else if (x[d] < mid)
-            groups.push(0)
-        else
-            groups.push(2)
-    }
-    return groups
-}
 
 function position(value) {
     return rectWidth * value
@@ -82,6 +60,27 @@ function shuffle() {
         shuffled[d] = choice
     }
     return shuffled
+}
+
+function current_locs() {
+    let locs = Array(n)
+    for (let i = 0; i < n; i++)
+        locs[sorted[i]] = i
+    return locs
+}
+
+function current_groups() {
+    let mid = (i + j) / 2
+    let groups = []
+    for (let d = 0; d < n; d++) {
+        if (x[d] < i || x[d] >= j)
+            groups.push(1)
+        else if (x[d] < mid)
+            groups.push(0)
+        else
+            groups.push(2)
+    }
+    return groups
 }
 
 function split() {
