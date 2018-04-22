@@ -18,8 +18,7 @@ let newton = - radius
 let nextNewton = newton
 let newton_line_visible = false
 
-let bisect_axis = {x1: 0, x2: canvasWidth, y1: canvasHeight - zero, y2: canvasHeight - zero, color: 'black'}
-let newton_axis = {x1: 0, x2: canvasWidth, y1: canvasHeight - zero, y2: canvasHeight - zero, color: 'black'}
+let x_axis = {x1: 0, x2: canvasWidth, y1: canvasHeight - zero, y2: canvasHeight - zero, color: 'black'}
 
 function f(x) {
     let z = x / canvasWidth
@@ -65,7 +64,7 @@ function displayCanvas(timer) {
         .attr('cy', d => d.y)
         .attr('fill', d => d.color)
     let lines = canvas.selectAll('line')
-        .data([bisect_axis, newton_axis, make_newton_line()])
+        .data([x_axis, make_newton_line()])
     lines.enter()
         .append('line')
         .attr('x1', d => d.x1)
