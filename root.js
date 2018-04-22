@@ -6,7 +6,6 @@ let coefficients = [0, 0.25, 0.5]
 let radius = 7
 let lineWidth = 3
 let axisWidth = 2
-let bgColor = 'grey'
 
 let lo = radius
 let hi = canvasWidth - radius
