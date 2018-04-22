@@ -2,7 +2,7 @@ let n = 32
 let rectWidth = Math.floor(window.innerWidth * .98 / n)
 let rectHeight = Math.floor(window.innerHeight * .7 / 2)
 let canvasWidth = n * rectWidth
-let canvasHeight = 3 * rectHeight
+let canvasHeight = 2 * rectHeight
 let time_unit = 100
 
 let values = shuffle()
