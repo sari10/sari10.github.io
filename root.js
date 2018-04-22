@@ -1,8 +1,9 @@
 let canvasWidth = .95 * window.innerWidth
 let canvasHeight = .7 * window.innerHeight
-let time_unit = 1000
+let bisect_time_unit = 700
+let newton_time_unit = 1000
 let points = Array.from({length: canvasWidth}, (v, i) => i)
-let coefficients = [0, 0.25, 0.5]
+let coefficients = [0, 0.25, 0.5, 0.0]
 let radius = 7
 let lineWidth = 3
 let axisWidth = 2
@@ -15,16 +16,25 @@ let threshold = canvasWidth / 1000
 
 let newton = - radius
 let nextNewton = newton
-let nextNewtonLine = newton
+let newton_line_visible = false
+
+let bisect_axis = {x1: 0, x2: canvasWidth, y1: canvasHeight - zero, y2: canvasHeight - zero, color: 'black'}
+let newton_axis = {x1: 0, x2: canvasWidth, y1: canvasHeight - zero, y2: canvasHeight - zero, color: 'black'}
 
 function f(x) {
     let z = x / canvasWidth
-    return 2 * lineWidth + canvasHeight * (coefficients[0] + coefficients[1] * z + coefficients[2] * Math.pow(z, 2))
+    let y = 0
+    for (let i = 0; i < coefficients.length; i++)
+        y += coefficients[i] * Math.pow(z, i)
+    return 2 * lineWidth + canvasHeight * y
 }
 
 function f_prime(x) {
     let z = x / canvasWidth
-    return canvasHeight * (coefficients[1] + 2 * coefficients[2] * z)
+    let y = 0
+    for (let i = 1; i < coefficients.length; i++)
+        y += i * coefficients[i] * Math.pow(z, i - 1)
+    return canvasHeight * y
 }
 
 function makeCanvas() {
@@ -39,17 +49,10 @@ function makeCanvas() {
         .attr('fill', 'none')
 }
 
-function displayCanvas(timer=time_unit) {
+function displayCanvas(timer) {
     let canvas = d3.select('svg')
     let circles = canvas.selectAll('circle')
-        .data(
-            [
-                {x: mid, y: canvasHeight - f(mid), color: 'blue'},
-                {x: lo, y: canvasHeight - zero, color: 'blue'},
-                {x: hi, y: canvasHeight - zero, color: 'blue'},
-                {x: nextNewton, y: canvasHeight - zero, color: 'purple'}
-            ]
-        )
+        .data(make_circle_data())
     circles.enter()
         .append('circle')
         .attr('cx', d => d.x)
@@ -62,13 +65,7 @@ function displayCanvas(timer=time_unit) {
         .attr('cy', d => d.y)
         .attr('fill', d => d.color)
     let lines = canvas.selectAll('line')
-        .data(
-            [
-                {x1: 0, x2: canvasWidth, y1: canvasHeight - zero, y2: canvasHeight - zero, color: 'black'},
-                {x1: 0, x2: canvasWidth, y1: canvasHeight - zero, y2: canvasHeight - zero, color: 'black'},
-                {x1: newton, x2: nextNewtonLine, y1: canvasHeight - f(newton), y2: canvasHeight - zero, color: 'purple'}
-            ]
-        )
+        .data([bisect_axis, newton_axis, make_newton_line()])
     lines.enter()
         .append('line')
         .attr('x1', d => d.x1)
@@ -85,6 +82,15 @@ function displayCanvas(timer=time_unit) {
         .attr('y2', d => d.y2)
 }
 
+function make_circle_data() {
+    return [
+        {x: mid, y: canvasHeight - f(mid), color: 'blue'},
+        {x: lo, y: canvasHeight - zero, color: 'blue'},
+        {x: hi, y: canvasHeight - zero, color: 'blue'},
+        {x: nextNewton, y: canvasHeight - zero, color: 'purple'}
+    ]
+}
+
 function bisect_lo_hi() {
     if (hi <= lo + threshold) {
         hi = mid
@@ -94,50 +100,59 @@ function bisect_lo_hi() {
         hi = mid
     if (f(mid) <= zero)
         lo = mid
-    displayCanvas()
+    displayCanvas(bisect_time_unit)
     if (lo != hi)
-        window.setTimeout(bisect_mid, time_unit)
+        window.setTimeout(bisect_mid, bisect_time_unit)
     else
-        window.setTimeout(init_newton, time_unit)
+        window.setTimeout(init_newton, newton_time_unit)
 }
 
 function bisect_mid() {
     mid = lo + (hi - lo) / 2
-    displayCanvas()
-    window.setTimeout(bisect_lo_hi, time_unit)
+    displayCanvas(bisect_time_unit)
+    window.setTimeout(bisect_lo_hi, bisect_time_unit)
+}
+
+function make_newton_line() {
+    return {
+        x1: newton,
+        x2: nextNewton,
+        y1: newton_line_visible ? canvasHeight - f(newton) : canvasHeight - zero,
+        y2: canvasHeight - zero,
+        color: 'purple'
+    }
 }
 
 function init_newton() {
     newton = radius
     nextNewton = newton
-    nextNewtonLine = newton
-    displayCanvas()
-    window.setTimeout(get_next_newton, time_unit)
+    displayCanvas(newton_time_unit)
+    window.setTimeout(display_newton_line, newton_time_unit)
+}
+
+function display_newton_line() {
+    newton_line_visible = true
+    displayCanvas(newton_time_unit)
+    window.setTimeout(get_next_newton, newton_time_unit)
 }
 
 function get_next_newton() {
-    nextNewtonLine = newton - ((f(newton) - zero) / f_prime(newton)) * canvasWidth
-    displayCanvas()
-    window.setTimeout(move_newton_point, time_unit)
+    nextNewton = newton - ((f(newton) - zero) / f_prime(newton)) * canvasWidth
+    displayCanvas(newton_time_unit)
+    window.setTimeout(contract_newton_line, newton_time_unit)
 }
 
-function move_newton_point() {
-    nextNewton = nextNewtonLine
-    displayCanvas()
-    window.setTimeout(move_newton_line, time_unit)
-}
-
-function move_newton_line() {
-    console.log('inter', newton, nextNewton)
+function contract_newton_line() {
+    newton_line_visible = false
     oldNewton = newton
     newton = nextNewton
-    displayCanvas()
+    displayCanvas(newton_time_unit)
     if (Math.abs(newton - oldNewton) > threshold)
-        window.setTimeout(get_next_newton, time_unit)
+        window.setTimeout(display_newton_line, newton_time_unit)
 }
 
 window.onload = function() {
     makeCanvas()
     displayCanvas()
-    window.setTimeout(bisect_lo_hi, time_unit)
+    window.setTimeout(bisect_lo_hi, bisect_time_unit)
 }
