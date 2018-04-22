@@ -8,8 +8,7 @@ let lineWidth = 1
 let time_unit = 500
 let list_x = Array(n).fill((canvasWidth - bigRectWidth) / 2)
 let list_y = Array.from({length: n}, (v, i) => (2 + i) * rectHeight)
-let _heap_x = [7, 3, 11, 1, 5, 9, 13, 0, 2, 4, 6, 8, 10, 12, 14]
-let heap_x = _heap_x.map(v => v * rectWidth)
+let heap_x = [7, 3, 11, 1, 5, 9, 13, 0, 2, 4, 6, 8, 10, 12, 14].map(v => v * rectWidth)
 let levels = [[0], [1, 2], [3, 4, 5, 6], [7, 8, 9, 10, 11, 12, 13, 14]]
 let heapify_position = Math.floor(n / 2)
 let position = heapify_position
