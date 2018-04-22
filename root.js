@@ -19,7 +19,7 @@ let nextNewtonLine = newton
 
 function f(x) {
     let z = x / canvasWidth
-    return canvasHeight * (coefficients[0] + coefficients[1] * z + coefficients[2] * Math.pow(z, 2))
+    return 2 * lineWidth + canvasHeight * (coefficients[0] + coefficients[1] * z + coefficients[2] * Math.pow(z, 2))
 }
 
 function f_prime(x) {
