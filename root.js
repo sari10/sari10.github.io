@@ -64,7 +64,7 @@ function displayCanvas(timer) {
         .attr('cy', d => d.y)
         .attr('fill', d => d.color)
     let lines = canvas.selectAll('line')
-        .data([x_axis, make_newton_line()])
+        .data(make_line_data())
     lines.enter()
         .append('line')
         .attr('x1', d => d.x1)
@@ -112,14 +112,15 @@ function bisect_mid() {
     window.setTimeout(bisect_lo_hi, bisect_time_unit)
 }
 
-function make_newton_line() {
-    return {
+function make_line_data() {
+    let newtonLine = {
         x1: newton,
         x2: nextNewton,
         y1: newton_line_visible ? canvasHeight - f(newton) : canvasHeight - zero,
         y2: canvasHeight - zero,
         color: 'purple'
     }
+    return [x_axis, newtonLine]
 }
 
 function init_newton() {
