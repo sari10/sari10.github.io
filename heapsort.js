@@ -1,33 +1,33 @@
-let n = 15
-let rectWidth = Math.floor(window.innerWidth * .9 / n)
-let bigRectWidth = (n / 2) * rectWidth
-let rectHeight = Math.floor(window.innerHeight * .7 / n)
-let canvasWidth = n * rectWidth
-let canvasHeight = (2 + n) * rectHeight
-let lineWidth = 1
-let time_unit = 500
-let list_x = Array(n).fill((canvasWidth - bigRectWidth) / 2)
-let list_y = Array.from({length: n}, (v, i) => (2 + i) * rectHeight)
-let heap_x = [7, 3, 11, 1, 5, 9, 13, 0, 2, 4, 6, 8, 10, 12, 14].map(v => v * rectWidth)
-let levels = [[0], [1, 2], [3, 4, 5, 6], [7, 8, 9, 10, 11, 12, 13, 14]]
-let heapify_position = Math.floor(n / 2)
-let position = heapify_position
-let show_branch = Array(n - 1).fill(false)
-let heapsize = n
+const n = 15
+const rectWidth = Math.floor(window.innerWidth * .9 / n)
+const bigRectWidth = (n / 2) * rectWidth
+const rectHeight = Math.floor(window.innerHeight * .7 / n)
+const canvasWidth = n * rectWidth
+const canvasHeight = (2 + n) * rectHeight
+const lineWidth = 1
+const time_unit = 500
+const list_x = Array(n).fill((canvasWidth - bigRectWidth) / 2)
+const list_y = Array.from({length: n}, (v, i) => (2 + i) * rectHeight)
+const heap_x = [7, 3, 11, 1, 5, 9, 13, 0, 2, 4, 6, 8, 10, 12, 14].map(v => v * rectWidth)
+const levels = [[0], [1, 2], [3, 4, 5, 6], [7, 8, 9, 10, 11, 12, 13, 14]]
+var heapify_position = Math.floor(n / 2)
+var position = heapify_position
+var show_branch = Array(n - 1).fill(false)
+var heapsize = n
 
-let values = shuffle()
-let x = Array(n).fill((canvasWidth - bigRectWidth) / 2)
-let y = Array(n)
+const values = shuffle()
+var x = Array(n).fill((canvasWidth - bigRectWidth) / 2)
+var y = Array(n)
 for (let i = 0; i < n; i++)
     y[values[i]] = list_y[i]
-let width = Array(n).fill(bigRectWidth)
+var width = Array(n).fill(bigRectWidth)
 
-let color = d3.scaleLinear()
+const color = d3.scaleLinear()
     .domain([-4, n])
     .range(['white', 'green'])
 
 function makeCanvas() {
-    let canvas = d3.select("body")
+    var canvas = d3.select("body")
         .append("svg") 
         .attr("width", canvasWidth)
         .attr("height", canvasHeight)
@@ -35,15 +35,15 @@ function makeCanvas() {
 }
 
 function displayCanvas(timer=time_unit) {
-    let canvas = d3.select("svg")
+    var canvas = d3.select("svg")
 
-    let branchLines = canvas.selectAll("line")
+    var branchLines = canvas.selectAll("line")
         .data(show_branch)
     branchLines.transition()
         .duration(timer / 2)
         .attr("stroke-width", d => d ? lineWidth : 0)
 
-    let canvasSlots = canvas.selectAll("rect")
+    var canvasSlots = canvas.selectAll("rect")
         .data(values)
     canvasSlots.enter()
         .append("rect")
@@ -97,7 +97,7 @@ function get_node(i) {
 }
 
 function make_branches() {
-    let branches = []
+    var branches = []
     for (let j = 0; j + 1 < levels.length; j++) {
         let current = levels[j]
         let next = levels[j + 1]
@@ -109,8 +109,8 @@ function make_branches() {
             branches.push({x1: heap_x[node], y1: list_y[node], x2: heap_x[right], y2: list_y[right]})
         }
     }
-    let canvas = d3.select("svg")
-    let canvasLines = canvas.selectAll("lines")
+    var canvas = d3.select("svg")
+    var canvasLines = canvas.selectAll("lines")
         .data(branches)
     canvasLines.enter()
         .append("line")
@@ -162,10 +162,10 @@ function make_array() {
 }
 
 function swap(u, v) {
-    let temp_x = x[u]
+    var temp_x = x[u]
     x[u] = x[v]
     x[v] = temp_x
-    let temp_y = y[u]
+    var temp_y = y[u]
     y[u] = y[v]
     y[v] = temp_y
     displayCanvas()

@@ -1,43 +1,43 @@
-let canvasWidth = .95 * window.innerWidth
-let canvasHeight = .7 * window.innerHeight
-let bisect_time_unit = 700
-let newton_time_unit = 1000
-let points = Array.from({length: canvasWidth}, (v, i) => i)
-let coefficients = [0, 0.25, 0.5, 0.0]
-let radius = 7
-let lineWidth = 3
-let axisWidth = 2
+const canvasWidth = .95 * window.innerWidth
+const canvasHeight = .7 * window.innerHeight
+const bisect_time_unit = 700
+const newton_time_unit = 1000
+const points = Array.from({length: canvasWidth}, (v, i) => i)
+const coefficients = [0, 0.25, 0.5, 0.0]
+const radius = 7
+const lineWidth = 3
+const axisWidth = 2
 
-let lo = radius
-let hi = canvasWidth - radius
-let mid = lo + (hi - lo) / 2
-let zero = canvasHeight * .19
-let threshold = canvasWidth / 1000
+var lo = radius
+var hi = canvasWidth - radius
+var mid = lo + (hi - lo) / 2
+const zero = canvasHeight * .19
+const threshold = canvasWidth / 1000
 
-let newton = - radius
-let nextNewton = newton
-let newton_line_visible = false
+var newton = - radius
+var nextNewton = newton
+var newton_line_visible = false
 
 let x_axis = {x1: 0, x2: canvasWidth, y1: canvasHeight - zero, y2: canvasHeight - zero, color: 'black'}
 
 function f(x) {
-    let z = x / canvasWidth
-    let y = 0
+    var z = x / canvasWidth
+    var y = 0
     for (let i = 0; i < coefficients.length; i++)
         y += coefficients[i] * Math.pow(z, i)
     return 2 * lineWidth + canvasHeight * y
 }
 
 function f_prime(x) {
-    let z = x / canvasWidth
-    let y = 0
+    var z = x / canvasWidth
+    var y = 0
     for (let i = 1; i < coefficients.length; i++)
         y += i * coefficients[i] * Math.pow(z, i - 1)
     return canvasHeight * y
 }
 
 function makeCanvas() {
-    let canvas = d3.select('body')
+    var canvas = d3.select('body')
         .append('svg') 
         .attr('width', canvasWidth)
         .attr('height', canvasHeight)
@@ -49,8 +49,8 @@ function makeCanvas() {
 }
 
 function displayCanvas(timer) {
-    let canvas = d3.select('svg')
-    let circles = canvas.selectAll('circle')
+    var canvas = d3.select('svg')
+    var circles = canvas.selectAll('circle')
         .data(make_circle_data())
     circles.enter()
         .append('circle')
@@ -63,7 +63,7 @@ function displayCanvas(timer) {
         .attr('cx', d => d.x)
         .attr('cy', d => d.y)
         .attr('fill', d => d.color)
-    let lines = canvas.selectAll('line')
+    var lines = canvas.selectAll('line')
         .data(make_line_data())
     lines.enter()
         .append('line')
@@ -113,7 +113,7 @@ function bisect_mid() {
 }
 
 function make_line_data() {
-    let newtonLine = {
+    var newtonLine = {
         x1: newton,
         x2: nextNewton,
         y1: newton_line_visible ? canvasHeight - f(newton) : canvasHeight - zero,

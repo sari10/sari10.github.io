@@ -1,19 +1,19 @@
-let n = 32
-let rectWidth = Math.floor(window.innerWidth * .98 / n)
-let rectHeight = Math.floor(window.innerHeight * .7 / 2)
-let canvasWidth = n * rectWidth
-let canvasHeight = 2 * rectHeight
-let time_unit = 100
+const n = 32
+const rectWidth = Math.floor(window.innerWidth * .98 / n)
+const rectHeight = Math.floor(window.innerHeight * .7 / 2)
+const canvasWidth = n * rectWidth
+const canvasHeight = 2 * rectHeight
+const time_unit = 100
 
-let values = shuffle()
-let sorted = values
-let x = current_locs()
-let y = Array(n).fill(1)
-let size = 2
-let i = 0
-let j = 2
+const values = shuffle()
+var sorted = values
+var x = current_locs()
+var y = Array(n).fill(1)
+var size = 2
+var i = 0
+var j = 2
 
-let colorScale = d3.scaleLinear()
+const colorScale = d3.scaleLinear()
     .domain([-4, n])
     .range(['white', 'green'])
 
@@ -26,15 +26,15 @@ function height(group) {
 }
 
 function makeCanvas() {
-    let canvas = d3.select("body")
+    var canvas = d3.select("body")
         .append("svg") 
         .attr("width", canvasWidth)
         .attr("height", canvasHeight)
 }
 
 function displayCanvas() {
-    let canvas = d3.select("svg")
-    let canvasSlots = canvas.selectAll("rect")
+    var canvas = d3.select("svg")
+    var canvasSlots = canvas.selectAll("rect")
         .data(values)
     canvasSlots.enter()
         .append("rect")
@@ -63,15 +63,15 @@ function shuffle() {
 }
 
 function current_locs() {
-    let locs = Array(n)
+    var locs = Array(n)
     for (let i = 0; i < n; i++)
         locs[sorted[i]] = i
     return locs
 }
 
 function current_groups() {
-    let mid = (i + j) / 2
-    let groups = []
+    var mid = (i + j) / 2
+    var groups = []
     for (let d = 0; d < n; d++) {
         if (x[d] < i || x[d] >= j)
             groups.push(1)
