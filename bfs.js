@@ -46,7 +46,7 @@ const angle = 2 * 3.14 / 5
 const in_theta = Array.from({length: 5}, (v, i) => i * angle)
 const out_theta = Array.from({length: 5}, (v, i) => (i + .5) * angle)
 const root_color = 'darkorange'
-const original_color = 'black'
+const original_color = 'silver'
 const queue_color = 'blue'
 const finished_color = 'purple'
 const line_color = 'green'
