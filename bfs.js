@@ -1,12 +1,12 @@
 const a = 5
 const b = 4
-const radius = window.innerWidth * .01
+const radius = Math.max(window.innerWidth, window.innerHeight) * .01
 const thinLineWidth = radius * .03
 const thickLineWidth = radius * .5
 const minNodeDist = radius * 10
 const minEdgeAdds = 3
 const canvasWidth = window.innerWidth * .98
-const canvasHeight = window.innerHeight * .8
+const canvasHeight = window.innerHeight * .9
 const x_margin = 2 * radius
 const y_margin = 2 * radius
 const x_min = x_margin
@@ -17,7 +17,7 @@ const y_min = y_margin
 const y_max = canvasHeight - y_margin
 const y_range = y_max - y_min
 const y_zero = (y_max - y_min) / 2
-const time_unit = 1000
+const time_unit = 750
 const dodecahedron_neighbors = [
     [1, 4, 5],
     [0, 2, 6],
@@ -45,10 +45,12 @@ const radii = [.25, .50, .62, .95]
 const angle = 2 * 3.14 / 5
 const in_theta = Array.from({length: 5}, (v, i) => i * angle)
 const out_theta = Array.from({length: 5}, (v, i) => (i + .5) * angle)
+const root_color = 'darkorange'
 const original_color = 'black'
 const queue_color = 'blue'
 const finished_color = 'purple'
 const line_color = 'green'
+const root_index = 17
 
 function transform(pre, pre_min, pre_max, post_min, post_max) {
     return ((pre - pre_min) / (pre_max - pre_min)) * (post_max - post_min) + post_min
@@ -61,7 +63,13 @@ dodecahedron_neighbors.forEach(
         let theta = i < 10 ? in_theta[i % 5] : out_theta[i % 5]
         let x = transform(r * Math.cos(theta), -1, 1, x_min, x_max)
         let y = transform(r * Math.sin(theta), -1, 1, y_min, y_max)
-        nodes.push({neighbors, x, y, parent_index: 17, color: original_color})
+        nodes.push({
+            neighbors,
+            x,
+            y,
+            parent_index: root_index,
+            color: i == root_index ? root_color : original_color
+        })
     }
 )
 var edges = []
@@ -87,7 +95,8 @@ nodes.forEach(
         }
     }
 )
-var queue = []
+
+var queue = [{index: root_index, node: nodes[root_index]}]
 
 function makeCanvas() {
     var canvas = d3.select('body')
@@ -144,7 +153,7 @@ function bfs() {
             break
         }
     }
-    current.node.color = finished_color
+    current.node.color = current.node.color == root_color ? root_color : finished_color
     current.node.neighbors.forEach(
         nbr_index => {
             let neighbor = nodes[nbr_index]
@@ -165,10 +174,5 @@ function bfs() {
 window.onload = function() {
     makeCanvas()
     displayCanvas()
-    queue.push({
-        index: 17,
-        node: nodes[17],
-    })
-    queue_index = 0
     window.setTimeout(bfs, time_unit)
 }
